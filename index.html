@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Introduction to GIS Problems</title>
+<meta charset='utf-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+<style type='text/css'>
+    body {
+      font-family: 'Helvetica';
+      letter-spacing: -5px;
+      background: #000;
+      background-size: 100%;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+    }
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+    em,
+    a {
+      font-style: normal;
+      color: #8dbd0c;
+    }
+    a {
+      background: #34d0e7;
+      color: #000;
+      text-decoration: none;
+    }
+    img {
+      width: 100%;
+    }
+    div {
+      cursor: pointer;
+      cursor: hand;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      padding: 75px;
+      line-height: 97%;
+    }
+    div.center {
+      text-align: center;
+    }
+    div.imageText {
+      text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    }
+
+</style>
+<script type='text/javascript'>
+window.onload = function() {
+    var s = document.getElementsByTagName('div'), cur = 0, ti;
+    if (!s) return;
+    function go(n) {
+        cur = n;
+        var i = 1e3, e = s[n], t;
+        document.body.className = e.dataset.bodyclass || '';
+        for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
+        e.style.display = 'inline';
+        e.style.fontSize = i + 'px';
+        if (e.firstChild && e.firstChild.nodeName === 'IMG') {
+            document.body.style.backgroundImage = 'url(' + e.firstChild.src + ')';
+            document.body.style.backgroundSize = '100% ' + window.innerHeight + 'px';
+            e.firstChild.style.display = 'none';
+            if ('classList' in e) e.classList.add('imageText');
+        } else {
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundSize = '100%';
+            document.body.style.backgroundColor = e.style.backgroundColor;
+        }
+        if (ti !== undefined) window.clearInterval(ti);
+        t = parseInt(e.dataset.timeToNext || 0, 10);
+        if (t > 0) ti = window.setTimeout(fwd, (t * 1000));
+        while (
+            e.offsetWidth > window.innerWidth ||
+            e.offsetHeight > window.innerHeight) {
+            e.style.fontSize = (i -= 2) + 'px';
+            if (i < 0) break;
+        }
+        e.style.marginTop = ((window.innerHeight - e.offsetHeight) / 2) + 'px';
+        if (window.location.hash !== n) window.location.hash = n;
+        document.title = e.textContent || e.innerText;
+    }
+    document.onclick = function() { go(++cur % (s.length)); };
+    function fwd() { go(Math.min(s.length - 1, ++cur)); }
+    function rev() { go(Math.max(0, --cur)); }
+    document.onkeydown = function(e) {
+        if (e.which === 39 || e.which === 34 || e.which === 40) fwd();
+        if (e.which === 37 || e.which === 33 || e.which === 38) rev();
+    };
+    document.ontouchstart = function(e) {
+        var x0 = e.changedTouches[0].pageX;
+        document.ontouchend = function(e) {
+            var x1 = e.changedTouches[0].pageX;
+            if (x1 - x0 < 0) fwd();
+            if (x1 - x0 > 0) rev();
+        };
+    };
+    function parse_hash() {
+        return Math.max(Math.min(
+            s.length - 1,
+            parseInt(window.location.hash.substring(1), 10)), 0);
+    }
+    if (window.location.hash) cur = parse_hash() || cur;
+    window.onhashchange = function() {
+        var c = parse_hash();
+        if (c !== cur) go(c);
+    };
+    go(cur);
+};
+</script></head><body>
+<div>
+An Introduction To Web Visualization
+<p>By: Luke Simkins</p>
+</div>
+<div><p>Who is this guy?</p>
+<ul>
+  <li>Software Engineer at Oseberg</li>
+  <li>Love graphics and data</li>
+  <li>Recent move into GIS</li>
+  <li>@lsimkins</li>
+</ul>
+</div>
+<div>
+  The Plan
+  <ul>
+    <li>What is Visualization?</li>
+    <li>How is Visualization related to Maps?</li>
+    <li>Basic Map Visualizations</li>
+    <li>Web-Based Tools</li>
+  </ul>
+</div>
+<div>
+  <p>What is <em>Visualization</em>?</p>
+  <img style="width: 30%; max-height: 30%;" src="/img/trippy2.gif" />
+  <img style="width: 30%; max-height: 30%; float: left;" style="float:left" src="/img/trippy1.gif" />
+  <img style="width: 30%; max-height: 30%; float: left;" src="/img/crazyDude.gif" />
+</div>
+<div style="width: 100%">
+  <p style="text-align: center;">
+    <img src="/img/definition.png" />
+  </p>
+</div>
+<div style="width: 100%">
+  <img src="/img/basic-bar-chart.png" />
+</div>
+<div style="width: 100%">
+  <img src="/img/wash-dc-metro-map.png" />
+</div>
+<div style="width: 100%">
+  <img src="/img/tungsten" />
+</div>
+<div>
+  Visualizations allow us to intrepret <em>large</em> amounts of <em>information.</em>
+</div>
+<div>Turn this</div>
+<div style="width:100%;">
+  <img src="/img/table" />
+</div>
+<div>Into this</div>
+<div style="width:100%;">
+  <img src="/img/dow" />
+</div>
+
+<div>What about Maps?</div>
+
+<div>Map visualizations allow us to interpret <em>spatially</em> significant data</div>
+<div style="text-align: center">
+  <p style="text-align: left">Maps are one of the most <em>information-dense</em> displays of information</p>
+  <img style="max-width: 30%;" src="http://i.giphy.com/qKltgF7Aw515K.gif" />
+</div>
+
+<div>Examples of Map Visualizations</div>
+
+<div>Thematic Maps
+  <ul>
+  <li>Display a particular theme for a geographic region</li>
+  <li>Choropleth is a common example</li>
+  <li>
+    <a target="_blank" href="http://ourworldindata.org/wp-content/uploads/datamaps/readFromCSV_autobucket_switchByButtons_infantmortality_longrun/readFromCSV_autobucket_switchByButtons_infantmortality_longrun.html">
+      World Infant Mortality
+    </a>
+  </li>
+  </ul>
+</div>
+
+<div>Dot density map<br>(Dot distribution map)
+  <ul>
+    <li>
+      <a target="_blank" href="https://api.tiles.mapbox.com/v4/enf.c3a2de35/page.html?access_token=pk.eyJ1IjoiZW5mIiwiYSI6IkNJek92bnMifQ.xn2_Uj9RkYTGRuCGg4DXZQ#5/31.241/-98.130">
+        Mapbox Tweet Map
+      </a>
+    </li>
+    <li>Over 6 billion data points</li>
+  </ul>
+</div>
+
+<div>Contour (Isopleth) Map</div>
+<div>
+  <img src="/img/contour-example.jpg" />
+</div>
+
+<div>
+  Proportional Symbol Maps
+  <a target="_blank" href="http://maps.stamen.com/sftech/">http://maps.stamen.com/sftech/</a>
+</div>
+<div>
+  <img src="/img/prop-symbol-example.png" />
+</div>
+
+<div>
+  Cartogram
+  <ul>
+    <li>Distort map area based on data</li>
+    <li><a href="http://brilliantmaps.com/cartogram-world-population-2015/">Population Cartogram</a></li>
+  </ul>
+</div>
+<div>
+  <img src="/img/cartogram" />
+</div>
+
+<div>
+  Others
+  <ul>
+    <li>Dasymetric</li>
+    <li>Heat maps</li>
+  </ul>
+</div>
+
+<div>Web-Based Tools</div>
+
+<div><a href="https://cartodb.com/">CartoDB</a></div>
+<div>
+  <ul>
+    <li>Platform for creating data-driven maps</li>
+    <li>Hosts your maps & data</li>
+    <li>Open Source</li>
+  </ul>
+</div>
+<div>
+  <img src="/img/cartodb-example.png" />
+</div>
+
+<div><a href="http://openlayers.org/">OpenLayers</a></div>
+<div>
+  <ul>
+    <li>Front-end javascript mapping library</li>
+    <li>Open Source</li>
+  </ul>
+</div>
+<div>
+  <img src="/img/openLayers" />
+</div>
+
+<div style="text-align: center;">
+  <p style="text-align: left; margin-bottom: 40px;"><a href="http://www.arcgis.com/features/">ESRI ArcGIS</a></p>
+  <img style="max-width: 60%;" src="/img/mistake.gif" />
+</div>
+<div>
+  <ul>
+    <li>Enterprise GIS</li>
+    <li>Mainly Proprietary</li>
+    <li>You must drink the koolaid</li>
+  </ul>
+</div>
+<div>
+  <img src="/img/arcGIS-example.png" />
+</div>
+
+<div><a href="https://www.mapbox.com/">Mapbox & Leaflet</a></div>
+<div>
+  <ul>
+    <li>Design & Host your maps</li>
+    <li>Raster & WebGL</li>
+    <li>Open Source</li>
+    <li>Awesome</li>
+  </ul>
+</div>
+<div>
+  <img src="/img/mapbox-example.png" />
+</div>
+
+<div>
+  <p>
+    <a target="_blank" href="http://d3js.org/"><em>d3</em></a><br>
+    Data-Driven Documents
+  </p>
+</div>
+<div><img src="/img/d3-example.png" /></div>
+
+<div>
+  <p>
+    Turf
+    <ul>
+      <li>Javascript Geospatial Analysis</li>
+      <li>"Helps <em>analyze, aggregate, and transform</em> data in order to visualize and answer advanced questions."</li>  
+    </ul>
+  </p>
+
+</div>
+
+<div>
+  <ul>
+    <li><a target="_blank" href="http://map.ipviking.com/">Cyber Attack Map</a></li>
+    <li><a target="_blank" href="http://worldweatherviewer.com/viewer">World Weather Viewer</a></li>
+  </ul>
+</div>
+
+<div>
+  <i>The Visual Display of Quantitative Information</i>
+  <em>by <a href="http://www.edwardtufte.com/tufte/">Edward Tufte</a></em>
+</div>
+
+<div><em>Questions?</em></div>
+</div>
